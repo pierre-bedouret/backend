@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'json'
+require_relative '../models/car'
+require_relative '../models/rental'
 
 # Class Database generate the data from the json
 # cars = [{ "id": 1, "price_per_day": 2000, "price_per_km": 10 }]
@@ -21,8 +23,9 @@ class Database
     serialized_input = File.read(@file)
     input = JSON.parse(serialized_input, symbolize_names: true)
 
-    @cars = input[:cars]
-    @rentals = input[:rentals]
+    @cars = input[:cars].map { |car_attributes| Car.new(car_attributes) }
+
+    @rentals = input[:rentals].map { |rental_attributes| Rental.new(rental_attributes, @cars) }
   end
 end
 
