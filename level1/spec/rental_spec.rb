@@ -75,4 +75,21 @@ describe Rental do
       expect(rental.car.id).to eq(1)
     end
   end
+
+  describe '#price' do
+    it 'should retrun the price of a rental' do
+      properties = { id: 1, car_id: 1, start_date: '2017-12-8', end_date: '2017-12-10', distance: 100 }
+      rental = Rental.new(properties, cars)
+      expect(rental.price).to eq(7000)
+    end
+  end
+
+  describe '#extract_data' do
+    it 'should return a hash with the id and the prie of the rental' do
+      properties = { id: 2, car_id: 1, start_date: '2017-12-14', end_date: '2017-12-18', distance: 550 }
+      rental = Rental.new(properties, cars)
+      expect(rental.extract_data).to be_a Hash
+      expect(rental.extract_data).to eq(id: 2, price: 15_500)
+    end
+  end
 end
