@@ -26,21 +26,21 @@ describe Rental do
   end
 
   it 'should be initialized with a hash of properties + list of cars' do
-    properties = { id: 1, car_id: 1, start_date: "2015-12-8", end_date: "2015-12-8", distance: 100 }
+    properties = { id: 1, car_id: 1, start_date: '2015-12-8', end_date: '2015-12-8', distance: 100 }
     rental = Rental.new(properties, cars)
     expect(rental).to be_a Rental
   end
 
   describe '#id' do
     it 'should return the rental id' do
-      rental = Rental.new({ id: 42 })
+      rental = Rental.new(id: 42)
       expect(rental.id).to eq(42)
     end
   end
 
   describe '#id=' do
     it 'should set the rental id' do
-      rental = Rental.new({ id: 42 })
+      rental = Rental.new(id: 42)
       rental.id = 43
       expect(rental.id).to eq(43)
     end
@@ -48,21 +48,21 @@ describe Rental do
 
   describe '#start_date' do
     it 'should return the start_date of the rental' do
-      rental = Rental.new({ start_date: '2017-12-8' })
+      rental = Rental.new(start_date: '2017-12-8')
       expect(rental.start_date).to eq('2017-12-8')
     end
   end
 
   describe '#end_date' do
     it 'should return the end_date of the rental' do
-      rental = Rental.new({ end_date: '2017-12-10' })
+      rental = Rental.new(end_date: '2017-12-10')
       expect(rental.end_date).to eq('2017-12-10')
     end
   end
 
   describe '#distance' do
     it 'should return the distance of the rental' do
-      rental = Rental.new({ distance: 100 })
+      rental = Rental.new(distance: 100)
       expect(rental.distance).to eq(100)
     end
   end
@@ -104,13 +104,51 @@ describe Rental do
       expect(rental.extract_data).to be_a Hash
       expect(rental.extract_data).to eq(
         id: 3,
-        price: 27800,
+        price: 27_800,
         commission:
         {
           insurance_fee: 4170,
           assistance_fee: 1200,
           drivy_fee: 2970
         }
+      )
+    end
+  end
+
+  describe '#extract_data_with_actor' do
+    it 'should return a hash with the id ant the actions of the rental with the good dispacht' do
+      properties = { id: 3, car_id: 1, start_date: '2015-07-3', end_date: '2015-07-14', distance: 1000 }
+      rental = Rental.new(properties, cars)
+      expect(rental.extract_data_with_actor).to be_a Hash
+      expect(rental.extract_data_with_actor).to eq(
+        id: 3,
+        actions: [
+          {
+            who: 'driver',
+            type: 'debit',
+            amount: 27_800
+          },
+          {
+            who: 'owner',
+            type: 'credit',
+            amount: 19_460
+          },
+          {
+            who: 'insurance',
+            type: 'credit',
+            amount: 4170
+          },
+          {
+            who: 'assistance',
+            type: 'credit',
+            amount: 1200
+          },
+          {
+            who: 'drivy',
+            type: 'credit',
+            amount: 2970
+          }
+        ]
       )
     end
   end
