@@ -30,11 +30,11 @@ class Actor
   end
 
   def driver
-    @rental.price
+    @rental.price + @rental.options_price
   end
 
   def owner
-    @rental.price - @rental.commission
+    @rental.price - @rental.commission + @rental.owner_options
   end
 
   def insurance
@@ -46,6 +46,6 @@ class Actor
   end
 
   def drivy
-    @rental.drivy_fee
+    @rental.drivy_fee + @rental.drivy_options
   end
 end
