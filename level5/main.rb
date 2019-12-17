@@ -16,7 +16,7 @@ def output_json(data)
 end
 
 # Get the expected data for all the rentals
-rentals_data = { rentals: database.rentals.map(&:extract_data_with_actor) }
+rentals_data = { rentals: database.rentals.map(&:extract_data_with_actor_and_options) }
 
 # set the output hash in a json file
 output_json(rentals_data)

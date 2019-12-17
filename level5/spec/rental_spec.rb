@@ -19,6 +19,7 @@ describe Rental do
   file_path = File.expand_path('.') + '/data/input.json'
   database = Database.new(file_path)
   let(:cars) { database.cars }
+  let(:options) { database.options }
   let(:rental) { Rental.new }
 
   it 'should return an instance of Rental when Rental.new is call' do
@@ -115,13 +116,14 @@ describe Rental do
     end
   end
 
-  describe '#extract_data_with_actor' do
-    it 'should return a hash with the id ant the actions of the rental with the good dispacht' do
+  describe '#extract_data_with_actor_and_options' do
+    it 'should return a hash with the id, the options and the actions of the rental with the good dispacht' do
       properties = { id: 3, car_id: 1, start_date: '2015-07-3', end_date: '2015-07-14', distance: 1000 }
       rental = Rental.new(properties, cars)
-      expect(rental.extract_data_with_actor).to be_a Hash
-      expect(rental.extract_data_with_actor).to eq(
+      expect(rental.extract_data_with_actor_and_options).to be_a Hash
+      expect(rental.extract_data_with_actor_and_options).to eq(
         id: 3,
+        options: [],
         actions: [
           {
             who: 'driver',
@@ -147,6 +149,46 @@ describe Rental do
             who: 'drivy',
             type: 'credit',
             amount: 2970
+          }
+        ]
+      )
+    end
+
+    it 'should return a hash with the id, the options and the actions of the rental with the good dispacht' do
+      properties = { id: 1, car_id: 1, start_date: '2015-12-8', end_date: '2015-12-8', distance: 100 }
+      rental = Rental.new(properties, cars, options)
+      expect(rental.extract_data_with_actor_and_options).to be_a Hash
+      expect(rental.extract_data_with_actor_and_options).to eq(
+        id: 1,
+        options: [
+          'gps',
+          'baby_seat'
+        ],
+        actions: [
+          {
+            who: 'driver',
+            type: 'debit',
+            amount: 3700
+          },
+          {
+            who: 'owner',
+            type: 'credit',
+            amount: 2800
+          },
+          {
+            who: 'insurance',
+            type: 'credit',
+            amount: 450
+          },
+          {
+            who: 'assistance',
+            type: 'credit',
+            amount: 100
+          },
+          {
+            who: 'drivy',
+            type: 'credit',
+            amount: 350
           }
         ]
       )
