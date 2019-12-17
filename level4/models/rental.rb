@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 require 'date'
+require_relative 'actor'
 
 # Class Rental generate the model rental
-# with e.g : { "id": 1, "car_id": 1, "start_date": "2017-12-8", "end_date": "2017-12-10", "distance": 100 },
+# with e.g : { "id": 1,"car_id": 1, "start_date": "2017-12-8", "end_date": "2017-12-10", "distance": 100 },
 class Rental
   attr_accessor :id
   attr_reader :car, :start_date, :end_date, :distance
@@ -24,7 +25,29 @@ class Rental
   end
 
   def extract_data
-    { id: @id, price: price, commission: commission }
+    { id: @id, price: price, commission: commission_compilation }
+  end
+
+  def extract_data_with_actor
+    @actor = Actor.new(self)
+
+    { id: @id, actions: @actor.actions }
+  end
+
+  def commission
+    (price * TOTAL_COMMISSION).to_i
+  end
+
+  def insurance_fee
+    (commission * INSURANCE_PART).to_i
+  end
+
+  def assistance_fee
+    (duration * ASSISTANCE_FEE_PER_DAY).to_i
+  end
+
+  def drivy_fee
+    (commission - insurance_fee - assistance_fee).to_i
   end
 
   private
@@ -51,16 +74,11 @@ class Rental
     total_price_per_day.to_i
   end
 
-  def commission
-    commission_amount = price * TOTAL_COMMISSION
-    insurance_fee = commission_amount * INSURANCE_PART
-    assistance_fee = duration * ASSISTANCE_FEE_PER_DAY
-    drivy_fee = commission_amount - insurance_fee - assistance_fee
-
+  def commission_compilation
     {
-      insurance_fee: insurance_fee.to_i,
-      assistance_fee: assistance_fee.to_i,
-      drivy_fee: drivy_fee.to_i
+      insurance_fee: insurance_fee,
+      assistance_fee: assistance_fee,
+      drivy_fee: drivy_fee
     }
   end
 end
