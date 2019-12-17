@@ -17,7 +17,7 @@ class Rental
   end
 
   def price
-    duration * @car.price_per_day + @distance * @car.price_per_km
+    price_per_day_with_discount(duration) + @distance * @car.price_per_km
   end
 
   def extract_data
@@ -28,5 +28,23 @@ class Rental
 
   def duration
     (Date.parse(@end_date) - Date.parse(@start_date)).to_i + 1
+  end
+
+  def price_per_day_with_discount(duration)
+    total_price_per_day = 0
+
+    duration.times do |d|
+      if d == 0
+        total_price_per_day += @car.price_per_day
+      elsif d >= 1 && d < 4
+        total_price_per_day += (@car.price_per_day * (1 - 0.1))
+      elsif d >= 4 && d < 10
+        total_price_per_day += (@car.price_per_day * (1 - 0.3))
+      else
+        total_price_per_day += (@car.price_per_day * (1 - 0.5))
+      end
+    end
+
+    total_price_per_day.to_i
   end
 end
